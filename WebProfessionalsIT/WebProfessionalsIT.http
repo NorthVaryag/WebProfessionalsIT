@@ -1,0 +1,6 @@
+@WebProfessionalsIT_HostAddress = http://localhost:5110
+
+GET {{WebProfessionalsIT_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
