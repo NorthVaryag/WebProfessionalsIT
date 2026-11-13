@@ -104,4 +104,45 @@ public class ExperiencesController : ControllerBase
             new { id = experience.Id },
             new { id = experience.Id, message = "Опыт работы добавлен" });
     }
+    
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateExperience(int id, UpdateExperienceDTO dto)
+    {
+        var experience = await _context.Experiences.FindAsync(id);
+
+        if (experience == null)
+            return NotFound(new { message = "Опыт работы не найден" });
+        
+        if (dto.StartWork.HasValue && 
+            dto.EndWork.HasValue && 
+            dto.EndWork < dto.StartWork)
+        {
+            return BadRequest(new { message = "Дата окончания раньше даты начала" });
+        }
+        
+        experience.EmploymentType  = dto.EmploymentType;
+        experience.Company    = dto.Company;
+        experience.PositionJob = dto.PositionJob;
+        experience.StartWork = dto.StartWork;
+        experience.EndWork = dto.EndWork;
+        experience.User = dto.User;
+        
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Опыт работы обновлен" });
+    }
+    
+    //Удаление
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteEducation(int id)
+    {
+        var experience = await _context.Educations.FindAsync(id);
+
+        if (experience == null)
+            return NotFound(new { message = "Опыт работы не найден" });
+
+        _context.Educations.Remove(experience);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "Опыт работы удален" });
+    }
 }
